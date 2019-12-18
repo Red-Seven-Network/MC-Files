@@ -7,6 +7,8 @@ options:
 
 	version: 1.0.0
 
+	new: true
+
 command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 	permission: {@AdminPermission}
 	permission message: &c&lYou do not have permission!
