@@ -3,14 +3,48 @@ options:
 
 	Permission: Downloader
 	AdminPermission: {@Permission}.Admin
+	AllowLIANetworkScripts: true
 
-command /downloader [<text>] [<text>] [<text>]:
+	version: 1.0.0
+
+command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 	permission: {@AdminPermission}
 	permission message: &c&lYou do not have permission!
 	trigger:
 		if argument 1 is "download":
+			if argument 2 is "custom":
+				if argument 3 is set:
+					if argument 4 is set:
+						send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
+						download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+						execute console command "/sk reload Downloads/%arg-3%.sk"
+						send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a.!"
+
 			if argument 2 is "api":
 				if argument 3 is "1.0" or "1.0.0":
-					send "{@prefix} &aDownloading &e&oAPI&a..."
-					download from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/api/1.0.0/API.sk" to "plugins/Skript/scripts/Downloads/API.sk"
-					send "{@prefix} &aDownloaded &e&oAPI&a!"
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oAPI&a..."
+						download from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/api/1.0.0/API.sk" to "plugins/Skript/scripts/Downloads/API.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oAPI&a!"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+
+		if argument 1 is "update" or "updatecheck" or "check":
+			UpdateCheck(player)
+
+on join:
+	UpdateCheck(player)
+
+function UpdateCheck(p: player):
+	if {_p} has permission "Downloader.Admin":
+		wait 3 seconds
+		if text from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/version/Downloader" = "{@version}":
+			stop
+		else:
+			set {_vers} to text from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/version/Downloader"
+			send "&3-----------------------------------------" to {_p}
+			send "&7Current version: &6{@version}" to {_p}
+			send "&7Newest version: &6%{_vers}%" to {_p}
+			send "&3-----------------------------------------" to {_p}
+			stop
