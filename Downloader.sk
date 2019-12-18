@@ -13,3 +13,4 @@ command /downloader [<text>] [<text>] [<text>]:
 				if argument 3 is "1.0" or "1.0.0":
 					send "{@prefix} &aDownloading &e&oAPI&a..."
 					download from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/api/1.0.0/API.sk" to "plugins/Skript/scripts/Downloads/API.sk"
+					send "{@prefix} &aDownloaded &e&oAPI&a!"
