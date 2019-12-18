@@ -1,0 +1,115 @@
+options:
+	prefix: &eDownloader &6»
+
+	Permission: Downloader
+	AdminPermission: {@Permission}.Admin
+	AllowLIANetworkScripts: true
+
+	version: 1.0.0
+
+command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
+	permission: {@AdminPermission}
+	permission message: &c&lYou do not have permission!
+	trigger:
+		if argument 1 is "download":
+			if argument 2 is "custom":
+				if argument 3 is set:
+					if argument 4 is set:
+						if {Downloader::Custom::List::%arg-3%} is set:
+							if argument 5 is "--overwrite":
+								send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
+								download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+								execute console command "/sk reload Downloads/%arg-3%.sk"
+								set {Downloader::Custom::List::%arg-3%} to arg-3
+								send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a!"
+								send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-3%&6.sk'"
+							else:
+								send "{@prefix} &e%arg-3% &calready exists, if you wish to overwrite the file/data then use '--overwrite' as the 5th argument."
+						
+						else if {Downloader::Custom::List::%arg-3%} is not set:
+							send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
+							download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+							execute console command "/sk reload Downloads/%arg-3%.sk"
+							set {Downloader::Custom::List::%arg-3%} to arg-3
+							send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a!"
+							send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-3%&6.sk'"
+
+			if argument 2 is "chatmanager":
+				if argument 3 is "1.0.0":
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oChatManager v1.0.0&a..."
+						download from "https://raw.githubusercontent.com/LIA-Network/MC-ChatManager/master/1.0.0/ChatManager.sk" to "plugins/Skript/scripts/Downloads/ChatManager.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oChatManager v1.0.0&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+				if argument 3 is "latest":
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oChatManager&a..."
+						download from "https://raw.githubusercontent.com/LIA-Network/MC-ChatManager/master/_latest/ChatManager.sk" to "plugins/Skript/scripts/Downloads/ChatManager.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oChatManager&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+				if argument 3 is not set:
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oChatManager&a..."
+						download from "https://raw.githubusercontent.com/LIA-Network/MC-ChatManager/master/_latest/ChatManager.sk" to "plugins/Skript/scripts/Downloads/ChatManager.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oChatManager&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+
+			if argument 2 is "list":
+				send "&eDownloader &7| &eDownload List &6» %{Downloader::Custom::List::*}%"
+
+			if argument 2 is "remove":
+				if {Downloader::Custom::List::%arg-3%} is set:
+					if argument 4 is "--confirm":
+						send "{@prefix} &cRemoving &e&o%arg-3%&c..."
+						delete "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+						delete {Downloader::Custom::List::%arg-3%}
+						send "{@prefix} &cRemoved &e&o%arg-3%&c!"
+					else:
+						send "{@prefix} &cPlease use '--confirm' to confirm the destructive action."
+
+		if argument 1 is "update" or "updatecheck" or "check":
+			UpdateCheck(player)
+
+		if argument 1 is "downloadlist":
+			send "&eDownloader &7| &eDownload List &6» %{Downloader::Custom::List::*}%"
+
+		if argument 1 is "remove":
+			if argument 2 is set:
+				if {Downloader::Custom::List::%arg-2%} is set:
+					if argument 3 is "--confirm":
+						send "{@prefix} &cRemoving &e&o%arg-2%&c..."
+						delete "plugins/Skript/scripts/Downloads/%arg-2%.sk"
+						delete {Downloader::Custom::List::%arg-2%}
+						send "{@prefix} &cRemoved &e&o%arg-2%&c!"
+					else:
+						send "{@prefix} &cPlease use '--confirm' to confirm the destructive action."
+
+on join:
+	UpdateCheck(player)
+
+function UpdateCheck(p: player):
+	if {_p} has permission "{@AdminPermission}":
+		wait 3 seconds
+		if text from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/version/Downloader" = "{@version}":
+			stop
+		else:
+			set {_vers} to text from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/version/Downloader"
+			send "&3-----------------------------------------" to {_p}
+			send "&7Current version: &6{@version}" to {_p}
+			send "&7Newest version: &6%{_vers}%" to {_p}
+			send "&3-----------------------------------------" to {_p}
+			stop
+
+on script load:
+	if file "plugins/Skript/scripts/Downloads" does not exist:
+		create "plugins/Skript/scripts/Downloads/test.sk" # Create temp file to create folder without WildSkript so it works on 1.14.4.
+		delete "plugins/Skript/scripts/Downloads/test.sk" # Remove that temp file that created the folder.
