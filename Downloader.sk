@@ -1,0 +1,15 @@
+options:
+	prefix: &eDownloader &6»
+
+	Permission: Downloader
+	AdminPermission: {@Permission}.Admin
+
+command /downloader [<text>] [<text>] [<text>]:
+	permission: {@AdminPermission}
+	permission message: &c&lYou do not have permission!
+	trigger:
+		if argument 1 is "download":
+			if argument 2 is "api":
+				if argument 3 is "1.0" or "1.0.0":
+					send "{@prefix} &aDownloading &e&oAPI&a..."
+					download from "" to "plugins/Skript/scripts/Downloaded/API.sk"
