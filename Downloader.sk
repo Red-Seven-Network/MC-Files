@@ -1,2 +1,2 @@
 on script load:
-	download from "http://raw.githubusercontent.com/LIA-Network/MC-Files/master/Downloader-Installation.sk" to "plugins/Skript/scripts/Downloader-Core.sk"
+	download from "https://github.com/LIA-Network/MC-Files/raw/master/-Downloader-Installation.sk" to "plugins/Skript/scripts/Downloader-Core.sk"
