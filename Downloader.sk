@@ -15,10 +15,24 @@ command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 			if argument 2 is "custom":
 				if argument 3 is set:
 					if argument 4 is set:
-						send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
-						download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
-						execute console command "/sk reload Downloads/%arg-3%.sk"
-						send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a.!"
+						if {Downloader::Custom::List::%arg-3%} is set:
+							if argument 5 is "--overwrite":
+								send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
+								download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+								execute console command "/sk reload Downloads/%arg-3%.sk"
+								set {Downloader::Custom::List::%arg-3%} to arg-3
+								send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a!"
+								send "{@prefix} &ePlease use '/sk reload Downloads/%arg-3%.sk'"
+							else:
+								send "{@prefix} &e%arg-3% &calready exists, if you wish to overwrite the file/data then use '--overwrite' as the 5th argument."
+						
+						else if {Downloader::Custom::List::%arg-3%} is not set:
+							send "{@prefix} &aDownloading &7[CUSTOM] &e&o%arg-3%&a..."
+							download from arg-4 to "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+							execute console command "/sk reload Downloads/%arg-3%.sk"
+							set {Downloader::Custom::List::%arg-3%} to arg-3
+							send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a!"
+							send "{@prefix} &ePlease use '/sk reload Downloads/%arg-3%.sk'"
 
 			if argument 2 is "api":
 				if argument 3 is "1.0" or "1.0.0":
@@ -27,17 +41,45 @@ command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 						download from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/api/1.0.0/API.sk" to "plugins/Skript/scripts/Downloads/API.sk"
 						execute console command "/sk reload Downloads/%arg-2%.sk"
 						send "{@prefix} &aDownloaded &e&oAPI&a!"
+						send "{@prefix} &ePlease use '/sk reload Downloads/%arg-2%.sk'"
 					else:
 						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
 
+			if argument 2 is "list":
+				send "&eDownloader &7| &eDownload List &6» %{Downloader::Custom::List::*}%"
+
+			if argument 2 is "remove":
+				if {Downloader::Custom::List::%arg-3%} is set:
+					if argument 4 is "--confirm":
+						send "{@prefix} &cRemoving &e&o%arg-3%&c..."
+						delete "plugins/Skript/scripts/Downloads/%arg-3%.sk"
+						delete {Downloader::Custom::List::%arg-3%}
+						send "{@prefix} &cRemoved &e&o%arg-3%&c!"
+					else:
+						send "{@prefix} &cPlease use '--confirm' to confirm the destructive action."
+
 		if argument 1 is "update" or "updatecheck" or "check":
 			UpdateCheck(player)
+
+		if argument 1 is "downloadlist":
+			send "&eDownloader &7| &eDownload List &6» %{Downloader::Custom::List::*}%"
+
+		if argument 1 is "remove":
+			if argument 2 is set:
+				if {Downloader::Custom::List::%arg-2%} is set:
+					if argument 3 is "--confirm":
+						send "{@prefix} &cRemoving &e&o%arg-2%&c..."
+						delete "plugins/Skript/scripts/Downloads/%arg-2%.sk"
+						delete {Downloader::Custom::List::%arg-2%}
+						send "{@prefix} &cRemoved &e&o%arg-2%&c!"
+					else:
+						send "{@prefix} &cPlease use '--confirm' to confirm the destructive action."
 
 on join:
 	UpdateCheck(player)
 
 function UpdateCheck(p: player):
-	if {_p} has permission "Downloader.Admin":
+	if {_p} has permission "{@AdminPermission}":
 		wait 3 seconds
 		if text from "https://raw.githubusercontent.com/LIA-Network/MC-Files/master/version/Downloader" = "{@version}":
 			stop
@@ -48,3 +90,8 @@ function UpdateCheck(p: player):
 			send "&7Newest version: &6%{_vers}%" to {_p}
 			send "&3-----------------------------------------" to {_p}
 			stop
+
+on script load:
+	if file "plugins/Skript/scripts/Downloads" does not exist:
+		create "plugins/Skript/scripts/Downloads/test.sk" # Create temp file to create folder without WildSkript so it works on 1.14.4.
+		delete "plugins/Skript/scripts/Downloads/test.sk" # Remove that temp file that created the folder.
