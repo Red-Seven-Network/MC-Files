@@ -5,3 +5,5 @@ options:
 command /lianetwork-api:
 	trigger:
 		send "&bLIA Network &6&oAPI &ev{@version}"
+		send ""
+		send "&c&lLIANetwork API is deprecated forever (maybe), and will be removed from downloader very soon. Please delete this download."
