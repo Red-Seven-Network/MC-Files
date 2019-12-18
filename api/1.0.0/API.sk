@@ -1,1 +1,7 @@
-f
+options:
+	prefix: EMPTY
+	version: 1.0.0
+
+command /lianetwork-api:
+	trigger:
+		send "&bLIA Network &6&oAPI &ev{@version}"
