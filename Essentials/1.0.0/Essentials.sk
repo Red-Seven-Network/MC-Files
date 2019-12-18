@@ -1,0 +1,3 @@
+on script load:
+	download from "https://github.com/LIA-Network/MC-Files/raw/master/Essentials/_latest/-Core.sk" to "plugins/Skript/scripts/Essentials-Core.sk"
+	execute console command "/sk reload Essentials-Core.sk"

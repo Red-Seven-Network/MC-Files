@@ -1,0 +1,75 @@
+options:
+	prefix: &a&lEssentials &8» # »
+
+	Permission: Essentials
+	GlobalPermission: Essentials.Global
+	PlayerPermission: Essentials.Player
+	AdminPermission: Essentials.Admin
+	NoPermission: &c&lYou do not have permission to run this command!
+
+	Version: 1.0
+
+command /clearchat [<text>] [<text>]:
+	trigger:
+		if argument 1 is not set:
+			clearChat(player)
+		else if argument 1 is "-s" or "s":
+			slientClearChat(player)
+			if argument 2 is "-c" or "c":
+				slientClearChatConsole(player)
+		else if argument 1 is "-c" or "c":
+			clearChatConsole(player)
+			if argument 2 is "-s" or "s":
+				slientClearChatConsole(player)
+
+command /mutechat:
+	trigger:
+		if {ChatMuted} is true:
+			set {ChatMuted} to false
+		else if {ChatMuted} is false:
+			set {ChatMuted} to true
+		else if {ChatMuted} is not set:
+			set {ChatMuted} to true
+
+on chat:
+	if {ChatMuted} is true:
+		cancel event
+		send "&cYou are not allowed to talk!"
+	else if {ChatMuted} is false:
+		stop
+
+function clearChat(p: player):
+	loop 100 times:
+		broadcast ""
+	broadcast "&e%{_p}% &chas cleared the chat!"
+	loop all players:
+		if loop-player has permission "Essentials.ClearChat.See":
+			send "&7&o[%{_p}%&7&o: cleared the chat]" to loop-player
+
+function clearChatConsole(p: player):
+	loop 100 times:
+		broadcast ""
+	broadcast "&c&lCONSOLE &chas cleared the chat!"
+	loop all players:
+		if loop-player has permission "Essentials.ClearChat.See":
+			send "&7&o[&c&lCONSOLE&7&o: cleared the chat]" to loop-player
+
+function slientClearChat(p: player):
+	loop 100 times:
+		broadcast ""
+	loop all players:
+		if loop-player has permission "Essentials.ClearChat.See":
+			send "&7&o[%{_p}%&7&o: cleared the chat]" to loop-player
+
+function slientClearChatConsole(p: player):
+	loop 100 times:
+		broadcast ""
+	loop all players:
+		if loop-player has permission "Essentials.ClearChat.See":
+			send "&7&o[&c&lCONSOLE&7&o: cleared the chat]" to loop-player
+
+on join:
+	set join message to ""
+
+on quit:
+	set quit message to ""

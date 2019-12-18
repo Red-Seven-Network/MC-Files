@@ -36,6 +36,8 @@ command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 							send "{@prefix} &aDownloaded &7[CUSTOM] &e&o%arg-3%&a!"
 							send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-3%&6.sk'"
 
+
+
 			if argument 2 is "chatmanager":
 				if argument 3 is "1.0.0":
 					if {@AllowLIANetworkScripts} is true:
@@ -77,6 +79,39 @@ command /downloader [<text>] [<text>] [<text>] [<text>] [<text>]:
 						send "{@prefix} &cRemoved &e&o%arg-3%&c!"
 					else:
 						send "{@prefix} &cPlease use '--confirm' to confirm the destructive action."
+
+
+
+			if argument 2 is "essentials":
+				if argument 3 is "1.0.0":
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oEssentials v1.0.0&a..."
+						download from "https://raw.githubusercontent.com/LIA-Network/MC-Essentials/master/1.0.0/Essentials.sk" to "plugins/Skript/scripts/Downloads/Essentials.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oEssentials v1.0.0&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+				if argument 3 is "latest":
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oEssentials&a..."
+						download from "https://github.com/LIA-Network/MC-Files/raw/master/Essentials/_latest/-Core.sk" to "plugins/Skript/scripts/Downloads/Essentials.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oEssentials&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+				if argument 3 is not set:
+					if {@AllowLIANetworkScripts} is true:
+						send "{@prefix} &aDownloading &e&oEssentials&a..."
+						download from "https://github.com/LIA-Network/MC-Files/raw/master/Essentials/_latest/-Core.sk" to "plugins/Skript/scripts/Downloads/Essentials.sk"
+						execute console command "/sk reload Downloads/%arg-2%.sk"
+						send "{@prefix} &aDownloaded &e&oEssentials&a!"
+						send "{@prefix} &ePlease use &6'/sk reload Downloads/%arg-2%&6.sk'"
+					else:
+						send "{@prefix} &cThe system administrator has LIA Network Scripts disabled, please contact them to enable them!"
+
+
 
 		if argument 1 is "update" or "updatecheck" or "check":
 			UpdateCheck(player)
